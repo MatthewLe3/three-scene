@@ -6,6 +6,8 @@
 	import * as THREE from "three";
 	import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
 	import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
+	// import {MTLLoader, OBJLoader} from 'three-obj-mtl-loader'
+
 	export default {
 		data() {
 			return {
@@ -46,7 +48,7 @@
 			},
 			createScene() {
 				this.scene = new THREE.Scene();
-				// this.scene.fog = new THREE.Fog(0xffffff, 0.015, 100);
+				this.scene.fog = new THREE.Fog(0xffffff, 0.015, 100);
 			},
 			createLight() {
 				// 环境光
@@ -137,7 +139,8 @@
 					mesh.rotateX(Math.PI / 2);
 					mesh.rotateY(-Math.PI / 2);
 					var box = new THREE.Box3().setFromObject(mesh);
-					mesh.position.set(7.5,7.5, box.max.z);  
+					mesh.position.set(7.5,7.5, 0.47);  
+					console.log(mesh)
 					this.scene.add(mesh);
 				});
 			},
