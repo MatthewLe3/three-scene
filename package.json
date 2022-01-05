@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preinstall": "echo I run before the install script",
+    "postinstall": "echo I run after the install script",
+    "prebuild": "echo I run before the build script",
+    "postbuild": "echo I run after the build script",
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build"
   },
