@@ -48,13 +48,13 @@
 			},
 			createLight() {
 				// 环境光
-				const ambientLight = new THREE.AmbientLight(0xffffff, 0.1);
+				const ambientLight = new THREE.AmbientLight(0xffffff, 1);
 				this.scene.add(ambientLight);
 				// 创建聚光灯
-				// const spotLight = new THREE.SpotLight(0xffffff);
-				// spotLight.position.set(-40, 60, -10);
-				// spotLight.castShadow = true;
-				// this.scene.add(spotLight);
+				const spotLight = new THREE.SpotLight(0xffffff);
+				spotLight.position.set(-40, 60, -10);
+				spotLight.castShadow = true;
+				this.scene.add(spotLight);
 			},
 			createCamera() {
 				this.camera = new THREE.PerspectiveCamera(
@@ -105,12 +105,26 @@
 				var cubeGeometry = new THREE.BoxGeometry(3, 3, 5);
 				var cubeMat = new THREE.MeshLambertMaterial({
 					//创建材料
-					color: 0x003300,
+					color: 0xb0a69a,
 					wireframe: false,
 				});
 				var cubeMesh = new THREE.Mesh(cubeGeometry, cubeMat);
 				cubeMesh.position.set(-7.5, 7.5, 2.5); //设置立方体的坐标
 				this.scene.add(cubeMesh);
+
+				var texture = THREE.ImageUtils.loadTexture("/image/building.png");
+				texture.wrapS = THREE.RepeatWrapping; //重复平铺
+				texture.wrapT = THREE.RepeatWrapping; //重复平铺
+				texture.repeat.set(2, 5); //重复次数
+				var plane = new THREE.PlaneGeometry(3,5,1,1);
+				var planeMaterial=new THREE.MeshLambertMaterial({
+					map:texture
+				});
+				var planeMesh = new THREE.Mesh(plane,planeMaterial);
+				planeMesh.position.set(-7.5, 5.99, 2.5);
+				// planeMesh.translateY(Math.PI);
+				planeMesh.rotateX(Math.PI/2)
+				this.scene.add(planeMesh);
 			},
 			render() {
 				if (this.controls) {
@@ -128,7 +142,7 @@
 				this.controls.maxZoom = 2;
 				this.controls.minDistance = 30;
 				this.controls.maxDistance = 70;
-				this.controls.autoRotate = true;
+				// this.controls.autoRotate = true;
 				this.controls.autoRotateSpeed = 1;
 			},
 		},
