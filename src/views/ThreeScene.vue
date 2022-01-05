@@ -6,7 +6,6 @@
 	import * as THREE from "three";
 	import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
 	import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
-	// import {MTLLoader, OBJLoader} from 'three-obj-mtl-loader'
 
 	export default {
 		data() {
@@ -78,6 +77,7 @@
 				this.renderer = new THREE.WebGLRenderer({
 					antialias: true,
 					alpha: true,
+					logarithmicDepthBuffer: true,
 				});
 				this.renderer.setSize(window.innerWidth, window.innerHeight); // 设置渲染区域尺寸
 				this.renderer.shadowMap.enabled = true; // 显示阴影
@@ -86,12 +86,14 @@
 				element.appendChild(this.renderer.domElement);
 			},
 			createMesh() {
-				// const bgGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
-				// const bgMaterial = new THREE.MeshBasicMaterial({
-				//     color:'0xffffff'
-				// });
-				// const plain = new THREE.Mesh(bgGeometry, bgMaterial);
-				// this.scene.add(plain);
+				const bgGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
+				const bgMaterial = new THREE.MeshBasicMaterial({
+					color: 0xeeefff,
+					side: THREE.DoubleSide,
+				});
+				const plain = new THREE.Mesh(bgGeometry, bgMaterial);
+				plain.position.z = -0.01;
+				this.scene.add(plain);
 
 				const geometry = new THREE.PlaneGeometry(20, 20, 1, 1);
 				let texture = THREE.ImageUtils.loadTexture("/image/ground.png");
@@ -100,7 +102,8 @@
 				texture.repeat.set(4, 4); //重复次数
 				const material = new THREE.MeshBasicMaterial({
 					map: texture,
-					// side: THREE.DoubleSide,
+					side: THREE.DoubleSide,
+					depthTest: true,
 				});
 				const cube = new THREE.Mesh(geometry, material);
 				this.scene.add(cube);
@@ -113,7 +116,7 @@
 					wireframe: false,
 				});
 				let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMat);
-				cubeMesh.position.set(-7.5, 7.5, 2.5); //设置立方体的坐标
+				cubeMesh.position.set(-7.5, 7.5, 2.55); //设置立方体的坐标
 				this.scene.add(cubeMesh);
 
 				let texture = THREE.ImageUtils.loadTexture(
@@ -168,10 +171,14 @@
 							}
 						});
 						const geometry = object.children[1].geometry;
-						var material = new THREE.MeshPhongMaterial( {  color: 0xff5533, specular: 0x111111, shininess: 200 } );
-						var buildMesh = new THREE.Mesh( geometry, material );
-						buildMesh.position.set(-2.5, 7.5, 0.47);
-						buildMesh.scale.set(1.5,1.0,1.0)
+						var material = new THREE.MeshPhongMaterial({
+							color: 0xff5533,
+							specular: 0x111111,
+							shininess: 200,
+						});
+						var buildMesh = new THREE.Mesh(geometry, material);
+						buildMesh.position.set(-2.5, 7.5, 1);
+						buildMesh.scale.set(1.5, 1.0, 1.0);
 						buildMesh.rotateZ(Math.PI);
 						this.scene.add(buildMesh);
 					}
@@ -193,7 +200,7 @@
 				this.controls.maxZoom = 2;
 				this.controls.minDistance = 30;
 				this.controls.maxDistance = 70;
-				// this.controls.autoRotate = true;
+				this.controls.autoRotate = true;
 				this.controls.autoRotateSpeed = 1;
 			},
 		},
