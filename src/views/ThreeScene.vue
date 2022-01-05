@@ -156,8 +156,6 @@
 								child.receiveShadow = true;
 							}
 						});
-
-						console.log("mesh", mesh);
 					}
 				);
 
