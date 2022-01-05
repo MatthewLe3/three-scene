@@ -136,18 +136,16 @@
 				fbxLoader.load(
 					"/models/cars/koenigsegg-agera/uploads_files_2792345_Koenigsegg.fbx",
 					(object) => {
-						console.log("object", object);
 						const mesh = object.children[2].clone();
-						mesh.scale.set(0.1,0.1,0.1);
+						mesh.scale.set(0.1, 0.1, 0.1);
 						mesh.rotateX(Math.PI / 2);
 						mesh.rotateY(-Math.PI / 2);
-						var box = new THREE.Box3().setFromObject(mesh);
-						mesh.position.set(7.5,7.5, 0.47);
-						mesh.material[0].emissive.setHex( 0xff0000 );
-						mesh.material[1].emissive.setHex( 0x00ff00 );
-						mesh.material[2].emissive.setHex( 0xffffff );
-						mesh.material[3].emissive.setHex( 0xffffff );
-						mesh.material[4].emissive.setHex( 0x000000 );
+						mesh.position.set(7.5, 7.5, 0.47);
+						mesh.material[0].emissive.setHex(0xff0000);
+						mesh.material[1].emissive.setHex(0x00ff00);
+						mesh.material[2].emissive.setHex(0xffffff);
+						mesh.material[3].emissive.setHex(0xffffff);
+						mesh.material[4].emissive.setHex(0x000000);
 						this.scene.add(mesh);
 						object.traverse(function (child) {
 							if (child.isMesh) {
@@ -155,6 +153,27 @@
 								child.receiveShadow = true;
 							}
 						});
+
+						console.log("mesh", mesh);
+					}
+				);
+
+				fbxLoader.load(
+					"/models/buildings/cottage_fbx.fbx",
+					(object) => {
+						object.traverse(function (child) {
+							if (child.isMesh) {
+								child.castShadow = true;
+								child.receiveShadow = true;
+							}
+						});
+						const geometry = object.children[1].geometry;
+						var material = new THREE.MeshPhongMaterial( {  color: 0xff5533, specular: 0x111111, shininess: 200 } );
+						var buildMesh = new THREE.Mesh( geometry, material );
+						buildMesh.position.set(-2.5, 7.5, 0.47);
+						buildMesh.scale.set(1.5,1.0,1.0)
+						buildMesh.rotateZ(Math.PI);
+						this.scene.add(buildMesh);
 					}
 				);
 			},
