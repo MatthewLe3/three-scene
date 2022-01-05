@@ -5,7 +5,7 @@
 <script>
 	import * as THREE from "three";
 	import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
-
+	import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
 	export default {
 		data() {
 			return {
@@ -36,6 +36,8 @@
 				this.createMesh();
 				// 添加建筑
 				this.addBuildings();
+				// 添加车模型
+				this.addCars();
 				// 渲染
 				this.render();
 
@@ -44,7 +46,7 @@
 			},
 			createScene() {
 				this.scene = new THREE.Scene();
-				this.scene.fog = new THREE.Fog(0xffffff, 0.015, 100);
+				// this.scene.fog = new THREE.Fog(0xffffff, 0.015, 100);
 			},
 			createLight() {
 				// 环境光
@@ -90,7 +92,7 @@
 				// this.scene.add(plain);
 
 				const geometry = new THREE.PlaneGeometry(20, 20, 1, 1);
-				var texture = THREE.ImageUtils.loadTexture("/image/ground.png");
+				let texture = THREE.ImageUtils.loadTexture("/image/ground.png");
 				texture.wrapS = THREE.RepeatWrapping; //重复平铺
 				texture.wrapT = THREE.RepeatWrapping; //重复平铺
 				texture.repeat.set(4, 4); //重复次数
@@ -102,29 +104,42 @@
 				this.scene.add(cube);
 			},
 			addBuildings() {
-				var cubeGeometry = new THREE.BoxGeometry(3, 3, 5);
-				var cubeMat = new THREE.MeshLambertMaterial({
+				let cubeGeometry = new THREE.BoxGeometry(3, 3, 5);
+				let cubeMat = new THREE.MeshLambertMaterial({
 					//创建材料
 					color: 0xb0a69a,
 					wireframe: false,
 				});
-				var cubeMesh = new THREE.Mesh(cubeGeometry, cubeMat);
+				let cubeMesh = new THREE.Mesh(cubeGeometry, cubeMat);
 				cubeMesh.position.set(-7.5, 7.5, 2.5); //设置立方体的坐标
 				this.scene.add(cubeMesh);
 
-				var texture = THREE.ImageUtils.loadTexture("/image/building.png");
+				let texture = THREE.ImageUtils.loadTexture(
+					"/image/building.png"
+				);
 				texture.wrapS = THREE.RepeatWrapping; //重复平铺
 				texture.wrapT = THREE.RepeatWrapping; //重复平铺
 				texture.repeat.set(2, 5); //重复次数
-				var plane = new THREE.PlaneGeometry(3,5,1,1);
-				var planeMaterial=new THREE.MeshLambertMaterial({
-					map:texture
+				let plane = new THREE.PlaneGeometry(3, 5, 1, 1);
+				let planeMaterial = new THREE.MeshLambertMaterial({
+					map: texture,
 				});
-				var planeMesh = new THREE.Mesh(plane,planeMaterial);
+				let planeMesh = new THREE.Mesh(plane, planeMaterial);
 				planeMesh.position.set(-7.5, 5.99, 2.5);
-				// planeMesh.translateY(Math.PI);
-				planeMesh.rotateX(Math.PI/2)
+				planeMesh.rotateX(Math.PI / 2);
 				this.scene.add(planeMesh);
+			},
+			addCars() {
+				let fbxLoader = new FBXLoader();
+				fbxLoader.load('/models/cars/koenigsegg-agera/uploads_files_2792345_Koenigsegg.fbx',  (object) =>{
+					const mesh = object.children[2].clone();
+					mesh.scale.set(0.1,0.1,0.1); 
+					mesh.rotateX(Math.PI / 2);
+					mesh.rotateY(-Math.PI / 2);
+					var box = new THREE.Box3().setFromObject(mesh);
+					mesh.position.set(7.5,7.5, box.max.z);  
+					this.scene.add(mesh);
+				});
 			},
 			render() {
 				if (this.controls) {
