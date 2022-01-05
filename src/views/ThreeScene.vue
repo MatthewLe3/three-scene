@@ -70,7 +70,7 @@
 				this.camera.position.set(0, -30, 40); // 设置相机位置
 				this.camera.lookAt(this.scene.position);
 				this.camera.up.set(0, 0, 1);
-				// this.camera.lookAt(new THREE.Vector3(10, 0, 0)); // 设置相机方向
+				this.camera.lookAt(new THREE.Vector3(10, 0, 0)); // 设置相机方向
 				this.scene.add(this.camera);
 			},
 			createRender() {
@@ -133,16 +133,30 @@
 			},
 			addCars() {
 				let fbxLoader = new FBXLoader();
-				fbxLoader.load('/models/cars/koenigsegg-agera/uploads_files_2792345_Koenigsegg.fbx',  (object) =>{
-					const mesh = object.children[2].clone();
-					mesh.scale.set(0.1,0.1,0.1); 
-					mesh.rotateX(Math.PI / 2);
-					mesh.rotateY(-Math.PI / 2);
-					var box = new THREE.Box3().setFromObject(mesh);
-					mesh.position.set(7.5,7.5, 0.47);  
-					console.log(mesh)
-					this.scene.add(mesh);
-				});
+				fbxLoader.load(
+					"/models/cars/koenigsegg-agera/uploads_files_2792345_Koenigsegg.fbx",
+					(object) => {
+						console.log("object", object);
+						const mesh = object.children[2].clone();
+						mesh.scale.set(0.1,0.1,0.1);
+						mesh.rotateX(Math.PI / 2);
+						mesh.rotateY(-Math.PI / 2);
+						var box = new THREE.Box3().setFromObject(mesh);
+						mesh.position.set(7.5,7.5, 0.47);
+						mesh.material[0].emissive.setHex( 0xff0000 );
+						mesh.material[1].emissive.setHex( 0x00ff00 );
+						mesh.material[2].emissive.setHex( 0xffffff );
+						mesh.material[3].emissive.setHex( 0xffffff );
+						mesh.material[4].emissive.setHex( 0x000000 );
+						this.scene.add(mesh);
+						object.traverse(function (child) {
+							if (child.isMesh) {
+								child.castShadow = true;
+								child.receiveShadow = true;
+							}
+						});
+					}
+				);
 			},
 			render() {
 				if (this.controls) {
