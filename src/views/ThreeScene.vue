@@ -6,6 +6,28 @@
 	import * as THREE from "three";
 	import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js";
 	import {FBXLoader} from "three/examples/jsm/loaders/FBXLoader";
+	import * as dat from "dat.gui";
+	const gui = new dat.GUI();
+
+	var controls = new (function () {
+		this.color0 = [243, 190, 91];
+		this.color1 = [0, 128, 255];
+		this.color2 = [0, 128, 255];
+		this.color3 = [0, 128, 255];
+		this.color4 = [255, 0, 0];//车身
+		this.color5 = [95,44,188];//车轮
+		this.color6 = [255,0,90];
+		this.color7 = [0, 128, 255];
+	})();
+
+	gui.addColor(controls, "color0");
+	gui.addColor(controls, "color1");
+	gui.addColor(controls, "color2");
+	gui.addColor(controls, "color3");
+	gui.addColor(controls, "color4");
+	gui.addColor(controls, "color5");
+	gui.addColor(controls, "color6");
+	gui.addColor(controls, "color7");
 
 	export default {
 		data() {
@@ -18,7 +40,8 @@
 				labelRenderer: null,
 				container: null,
 				controls: null,
-				tickerNum:0
+				tickerNum: 0,
+				carMesh: null,
 			};
 		},
 		mounted() {
@@ -144,17 +167,13 @@
 				fbxLoader.load(
 					"/models/cars/koenigsegg-agera/uploads_files_2792345_Koenigsegg.fbx",
 					(object) => {
-						const mesh = object.children[2].clone();
-						mesh.scale.set(0.1, 0.1, 0.1);
-						mesh.rotateX(Math.PI / 2);
-						mesh.rotateY(-Math.PI / 2);
-						mesh.position.set(7.5, 7.5, 0.47);
-						mesh.material[0].emissive.setHex(0xff0000);
-						mesh.material[1].emissive.setHex(0x00ff00);
-						mesh.material[2].emissive.setHex(0xffffff);
-						mesh.material[3].emissive.setHex(0xffffff);
-						mesh.material[4].emissive.setHex(0x000000);
-						this.scene.add(mesh);
+						this.carMesh = object.children[2].clone();
+						this.carMesh.scale.set(0.1, 0.1, 0.1);
+						this.carMesh.rotateX(Math.PI / 2);
+						this.carMesh.rotateY(-Math.PI / 2);
+						this.carMesh.position.set(7.5, 7.5, 0.47);
+
+						this.scene.add(this.carMesh);
 						object.traverse(function (child) {
 							if (child.isMesh) {
 								child.castShadow = true;
@@ -192,7 +211,7 @@
 			addAnimation() {
 				let fbxLoader = new FBXLoader();
 				fbxLoader.load("/models/animation/Walking.fbx", (object) => {
-					this.person = object
+					this.person = object;
 
 					this.person.traverse(function (child) {
 						if (child.isMesh) {
@@ -204,16 +223,16 @@
 					this.person.position.set(-9, 0, 0.01);
 					this.person.rotateX(Math.PI / 2);
 					this.person.rotation.y = Math.PI / 2;
-					this.person.xRange = [-9,9]
-					const count = 1000
-					const range = (this.person.xRange[1] - this.person.xRange[0])/count
+					this.person.xRange = [-9, 9];
+					const count = 1000;
+					const range =
+						(this.person.xRange[1] - this.person.xRange[0]) / count;
 
-					let arr = []
-					for(let i=0;i<count;i++){
-						arr.push(this.person.xRange[0]+i*range)
+					let arr = [];
+					for (let i = 0; i < count; i++) {
+						arr.push(this.person.xRange[0] + i * range);
 					}
-					this.person.xStepArr = arr
-
+					this.person.xStepArr = arr;
 
 					this.mixer = new THREE.AnimationMixer(this.person);
 					const playerRun = this.mixer.clipAction(
@@ -223,31 +242,50 @@
 					// 获取渲染的时间间隔
 					this.clock = new THREE.Clock();
 					this.scene.add(this.person);
-					
 				});
 			},
 			render() {
 				if (this.controls) {
 					this.controls.update();
 				}
-				if(this.mixer){
-					this.tickerNum ++
+				if (this.carMesh) {
+					for (let i = 0; i < this.carMesh.material.length; i++) {
+						this.carMesh.material[i].emissive.r =
+							controls["color" + i][0] / 255;
+						this.carMesh.material[i].emissive.g =
+							controls["color" + i][1] / 255;
+						this.carMesh.material[i].emissive.b =
+							controls["color" + i][2] / 255;
+					}
+				}
+				if (this.mixer) {
+					this.tickerNum++;
 					this.mixer.update(this.clock.getDelta());
 
-					const remainder = this.tickerNum % this.person.xStepArr.length
-					const integer = Math.floor(this.tickerNum / this.person.xStepArr.length)
-					if(integer%2 ==0){
+					const remainder =
+						this.tickerNum % this.person.xStepArr.length;
+					const integer = Math.floor(
+						this.tickerNum / this.person.xStepArr.length
+					);
+					if (integer % 2 == 0) {
 						this.person.rotation.y = Math.PI / 2;
-						this.person.position.set(this.person.xStepArr[remainder], 0, 0.01);
-					}else{
+						this.person.position.set(
+							this.person.xStepArr[remainder],
+							0,
+							0.01
+						);
+					} else {
 						this.person.rotation.y = -Math.PI / 2;
-						this.person.position.set(this.person.xStepArr[this.person.xStepArr.length-remainder], 0, 0.01);
+						this.person.position.set(
+							this.person.xStepArr[
+								this.person.xStepArr.length - remainder
+							],
+							0,
+							0.01
+						);
 					}
-					
-					
-
 				}
-				
+
 				this.renderer.render(this.scene, this.camera);
 				requestAnimationFrame(this.render);
 			},
