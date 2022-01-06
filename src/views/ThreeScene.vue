@@ -18,6 +18,7 @@
 				labelRenderer: null,
 				container: null,
 				controls: null,
+				tickerNum:0
 			};
 		},
 		mounted() {
@@ -39,6 +40,10 @@
 				this.addBuildings();
 				// 添加车模型
 				this.addCars();
+				// 添加房屋模型
+				this.addBuildingsModel();
+				// 添加动画
+				this.addAnimation();
 				// 渲染
 				this.render();
 
@@ -158,7 +163,9 @@
 						});
 					}
 				);
-
+			},
+			addBuildingsModel() {
+				let fbxLoader = new FBXLoader();
 				fbxLoader.load(
 					"/models/buildings/cottage_fbx.fbx",
 					(object) => {
@@ -182,10 +189,65 @@
 					}
 				);
 			},
+			addAnimation() {
+				let fbxLoader = new FBXLoader();
+				fbxLoader.load("/models/animation/Walking.fbx", (object) => {
+					this.person = object
+
+					this.person.traverse(function (child) {
+						if (child.isMesh) {
+							child.castShadow = true;
+							child.receiveShadow = true;
+						}
+					});
+					this.person.scale.set(0.01, 0.01, 0.01);
+					this.person.position.set(-9, 0, 0.01);
+					this.person.rotateX(Math.PI / 2);
+					this.person.rotation.y = Math.PI / 2;
+					this.person.xRange = [-9,9]
+					const count = 1000
+					const range = (this.person.xRange[1] - this.person.xRange[0])/count
+
+					let arr = []
+					for(let i=0;i<count;i++){
+						arr.push(this.person.xRange[0]+i*range)
+					}
+					this.person.xStepArr = arr
+
+
+					this.mixer = new THREE.AnimationMixer(this.person);
+					const playerRun = this.mixer.clipAction(
+						this.person.animations[0]
+					);
+					playerRun.play();
+					// 获取渲染的时间间隔
+					this.clock = new THREE.Clock();
+					this.scene.add(this.person);
+					
+				});
+			},
 			render() {
 				if (this.controls) {
 					this.controls.update();
 				}
+				if(this.mixer){
+					this.tickerNum ++
+					this.mixer.update(this.clock.getDelta());
+
+					const remainder = this.tickerNum % this.person.xStepArr.length
+					const integer = Math.floor(this.tickerNum / this.person.xStepArr.length)
+					if(integer%2 ==0){
+						this.person.rotation.y = Math.PI / 2;
+						this.person.position.set(this.person.xStepArr[remainder], 0, 0.01);
+					}else{
+						this.person.rotation.y = -Math.PI / 2;
+						this.person.position.set(this.person.xStepArr[this.person.xStepArr.length-remainder], 0, 0.01);
+					}
+					
+					
+
+				}
+				
 				this.renderer.render(this.scene, this.camera);
 				requestAnimationFrame(this.render);
 			},
@@ -196,7 +258,7 @@
 				);
 				this.controls.enablePan = false;
 				this.controls.maxZoom = 2;
-				this.controls.minDistance = 30;
+				this.controls.minDistance = 10;
 				this.controls.maxDistance = 70;
 				this.controls.autoRotate = true;
 				this.controls.autoRotateSpeed = 1;
