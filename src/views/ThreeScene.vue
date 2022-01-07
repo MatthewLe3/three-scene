@@ -298,7 +298,7 @@
 				this.controls.maxZoom = 2;
 				this.controls.minDistance = 10;
 				this.controls.maxDistance = 70;
-				// this.controls.autoRotate = true;
+				this.controls.autoRotate = true;
 				this.controls.autoRotateSpeed = 1;
 			},
 		},
