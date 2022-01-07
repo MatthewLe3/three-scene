@@ -20,14 +20,18 @@
 		this.color7 = [0, 128, 255];
 	})();
 
-	gui.addColor(controls, "color0").name('尾翼');
-	gui.addColor(controls, "color1").name('挡风玻璃');
-	gui.addColor(controls, "color2").name('进气口');
-	gui.addColor(controls, "color3").name('雨刷');
-	gui.addColor(controls, "color4").name('车身');
-	gui.addColor(controls, "color5").name('车胎');
-	// gui.addColor(controls, "color6");
-	// gui.addColor(controls, "color7");
+	// 汽车的control
+	var carControl = gui.addFolder('跑车');
+
+	carControl.addColor(controls, "color0").name('尾翼');
+	carControl.addColor(controls, "color1").name('挡风玻璃');
+	carControl.addColor(controls, "color2").name('进气口');
+	carControl.addColor(controls, "color3").name('雨刷');
+	carControl.addColor(controls, "color4").name('车身');
+	carControl.addColor(controls, "color5").name('车胎');
+	carControl.open()
+	
+	
 
 	export default {
 		data() {
@@ -300,6 +304,13 @@
 				this.controls.maxDistance = 70;
 				this.controls.autoRotate = true;
 				this.controls.autoRotateSpeed = 1;
+
+				// OrbitControls
+				var orbitControl = gui.addFolder('OrbitControls');
+				orbitControl.add(this.controls,'autoRotate',[false,true]).onChange(e=>{
+					this.controls.autoRotate = JSON.parse(e)
+				})
+				orbitControl.open()
 			},
 		},
 	};
