@@ -10,24 +10,24 @@
 	const gui = new dat.GUI();
 
 	var controls = new (function () {
-		this.color0 = [243, 190, 91];
-		this.color1 = [0, 128, 255];
-		this.color2 = [0, 128, 255];
-		this.color3 = [0, 128, 255];
-		this.color4 = [255, 0, 0];//车身
-		this.color5 = [95,44,188];//车轮
+		this.color0 = [255,0,0];
+		this.color1 = [0,0,0];
+		this.color2 = [158,147,147];
+		this.color3 = [198,198,198];
+		this.color4 = [0,0,0];
+		this.color5 = [36,37,40];
 		this.color6 = [255,0,90];
 		this.color7 = [0, 128, 255];
 	})();
 
-	gui.addColor(controls, "color0");
-	gui.addColor(controls, "color1");
-	gui.addColor(controls, "color2");
-	gui.addColor(controls, "color3");
-	gui.addColor(controls, "color4");
-	gui.addColor(controls, "color5");
-	gui.addColor(controls, "color6");
-	gui.addColor(controls, "color7");
+	gui.addColor(controls, "color0").name('尾翼');
+	gui.addColor(controls, "color1").name('挡风玻璃');
+	gui.addColor(controls, "color2").name('进气口');
+	gui.addColor(controls, "color3").name('雨刷');
+	gui.addColor(controls, "color4").name('车身');
+	gui.addColor(controls, "color5").name('车胎');
+	// gui.addColor(controls, "color6");
+	// gui.addColor(controls, "color7");
 
 	export default {
 		data() {
@@ -298,7 +298,7 @@
 				this.controls.maxZoom = 2;
 				this.controls.minDistance = 10;
 				this.controls.maxDistance = 70;
-				this.controls.autoRotate = true;
+				// this.controls.autoRotate = true;
 				this.controls.autoRotateSpeed = 1;
 			},
 		},
