@@ -83,11 +83,11 @@
 			},
 			createLight() {
 				// 环境光
-				const ambientLight = new THREE.AmbientLight(0xffffff, 1);
+				const ambientLight = new THREE.AmbientLight(0xffffff, .1);
 				this.scene.add(ambientLight);
 				// 创建聚光灯
 				const spotLight = new THREE.SpotLight(0xffffff);
-				spotLight.position.set(-40, 60, -10);
+				spotLight.position.set(0, 0, 3);
 				spotLight.castShadow = true;
 				this.scene.add(spotLight);
 			},
@@ -119,7 +119,7 @@
 			},
 			createMesh() {
 				const bgGeometry = new THREE.PlaneGeometry(50, 50, 1, 1);
-				const bgMaterial = new THREE.MeshBasicMaterial({
+				const bgMaterial = new THREE.MeshLambertMaterial({
 					color: 0xeeefff,
 					side: THREE.DoubleSide,
 				});
@@ -132,12 +132,17 @@
 				texture.wrapS = THREE.RepeatWrapping; //重复平铺
 				texture.wrapT = THREE.RepeatWrapping; //重复平铺
 				texture.repeat.set(4, 4); //重复次数
-				const material = new THREE.MeshBasicMaterial({
+				// MeshBasicMaterial 不受光照影响
+				// MeshLambertMaterial 对光照有反应，用于创建暗淡的不发光的物体
+				// MeshPhongMaterial 对光照有反应，用于创建金属类明亮物体
+				const material = new THREE.MeshPhongMaterial ({
+					color:0xafc0ca,
 					map: texture,
 					side: THREE.DoubleSide,
-					depthTest: true,
+					depthTest: true
 				});
 				const cube = new THREE.Mesh(geometry, material);
+				cube.receiveShadow = true;
 				this.scene.add(cube);
 			},
 			addBuildings() {
@@ -223,11 +228,14 @@
 							child.receiveShadow = true;
 						}
 					});
+
+					this.person.castShadow = true
 					this.person.scale.set(0.01, 0.01, 0.01);
 					this.person.position.set(-9, 0, 0.01);
 					this.person.rotateX(Math.PI / 2);
 					this.person.rotation.y = Math.PI / 2;
 					this.person.xRange = [-9, 9];
+
 					const count = 1000;
 					const range =
 						(this.person.xRange[1] - this.person.xRange[0]) / count;
