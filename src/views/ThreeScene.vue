@@ -312,7 +312,6 @@
 							child.receiveShadow = true;
 							child.material.map = texture3;
 							child.material.lightMap = texture1;
-							console.log("child.material", child.material);
 						}
 					});
 					this.lamtern.receiveShadow = true;
@@ -322,8 +321,6 @@
 					this.lamtern.rotateX(Math.PI / 2);
 
 					this.scene.add(this.lamtern);
-
-					console.log(this.lamtern);
 				});
 			},
 			render() {
