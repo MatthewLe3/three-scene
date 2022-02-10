@@ -116,7 +116,7 @@
 				this.tipsSpriteList = [];
 				this.tipsList.forEach((item) => {
 					let sprite = new THREE.Sprite(material);
-					sprite.scale.set(2, 2, 2);
+					sprite.scale.set(8, 8, 8);
 					sprite.position.set(item.x, item.y, item.z);
 					sprite.item = item;
 					this.scene.add(sprite);
