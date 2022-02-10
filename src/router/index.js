@@ -8,6 +8,11 @@ const routes = [
     path: '/',
     name: 'ThreeScene',
     component: () => import(/* webpackChunkName: "threeScene" */ '../views/ThreeScene.vue')
+  },
+  {
+    path: '/skyBox',
+    name: 'SkyBox',
+    component: () => import(/* webpackChunkName: "skyBox" */ '../views/SkyBox.vue')
   }
 ]
 
