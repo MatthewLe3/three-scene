@@ -13,6 +13,11 @@ const routes = [
     path: '/skyBox',
     name: 'SkyBox',
     component: () => import(/* webpackChunkName: "skyBox" */ '../views/SkyBox.vue')
+  },
+  {
+    path: '/sphere',
+    name: 'Sphere',
+    component: () => import(/* webpackChunkName: "sphere" */ '../views/Sphere.vue')
   }
 ]
 
